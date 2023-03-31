@@ -14,14 +14,27 @@ import javax.persistence.*;
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id",unique = true,length = 10,nullable = false)
     private int id;
-    @Column(name = "name")
+    @Column(name = "name",unique = false,length = 25,nullable = false)
     private String name;
-    @Column(name = "email")
+    @Column(name = "email",unique = true,length = 25,nullable = false)
     private String email;
-    @Column(name = "address")
+    @Column(name = "address",length = 100,nullable = false)
     private String address;
-    @OneToMany
+    @Column(name = "phone",unique = true,length = 10,nullable = false)
+    private String phone;
+    @OneToOne
     private School school;
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                ", school=" + school +
+                '}';
+    }
 }
