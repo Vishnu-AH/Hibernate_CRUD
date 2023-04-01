@@ -27,7 +27,7 @@ public class StudentServiceImplementation implements StudentService {
             School school = schoolRepository.findById(school_id).get();
             student.setSchool(school);
             Response<Student> response = new Response<>();
-            response.setMessage("successfully saved");
+            response.setMessage("Student successfully saved");
             response.setHttpStatus(HttpStatus.CREATED.value());
             response.setData(studentRepository.save(student));
             return new ResponseEntity<Response<Student>>(response, HttpStatus.CREATED);
@@ -43,7 +43,7 @@ public class StudentServiceImplementation implements StudentService {
                 student.setSchool(school);
             }
             studentRepository.saveAll(students);
-            response.setMessage("successfully saved");
+            response.setMessage("Successfully saved all students");
             response.setHttpStatus(HttpStatus.CREATED.value());
             response.setData(students);
             return new ResponseEntity<Response<List<Student>>>(response, HttpStatus.CREATED);
@@ -55,7 +55,7 @@ public class StudentServiceImplementation implements StudentService {
     public ResponseEntity<Response<List<Student>>> getStudents(){
         List<Student> students = studentRepository.findAll();
         Response<List<Student>> response = new Response<>();
-        response.setMessage("Found");
+        response.setMessage("Students found");
         response.setHttpStatus(HttpStatus.FOUND.value());
         response.setData(students);
         return new ResponseEntity<Response<List<Student>>>(response, HttpStatus.FOUND);
@@ -63,7 +63,7 @@ public class StudentServiceImplementation implements StudentService {
     public ResponseEntity<Response<Student>> getStudentById(int id){
         if (studentRepository.findById(id).isPresent()) {
             Response<Student> response = new Response<>();
-            response.setMessage("Found");
+            response.setMessage("School found for given ID");
             response.setHttpStatus(HttpStatus.FOUND.value());
             response.setData(studentRepository.findById(id).get());
             return new ResponseEntity<Response<Student>>(response, HttpStatus.FOUND);
@@ -75,7 +75,7 @@ public class StudentServiceImplementation implements StudentService {
     public ResponseEntity<Response<Student>> getStudentByName(String name){
         if (studentRepository.findByName(name)!=null) {
             Response<Student> response = new Response<>();
-            response.setMessage("Found");
+            response.setMessage("Student found for given Name");
             response.setHttpStatus(HttpStatus.FOUND.value());
             response.setData(studentRepository.findByName(name));
             return new ResponseEntity<Response<Student>>(response, HttpStatus.FOUND);
@@ -89,7 +89,7 @@ public class StudentServiceImplementation implements StudentService {
             Response<Student> response = new Response<>();
             Student student = studentRepository.findById(id).get();
             studentRepository.delete(student);
-            response.setMessage("Found");
+            response.setMessage("Student found. Deleted successfully");
             response.setHttpStatus(HttpStatus.FOUND.value());
             response.setData(student);
             return new ResponseEntity<Response<Student>>(response, HttpStatus.FOUND);
@@ -102,7 +102,7 @@ public class StudentServiceImplementation implements StudentService {
             Student excistingStudent = studentRepository.findById(student.getId()).get();
             student.setSchool(excistingStudent.getSchool());
             Response<Student> response = new Response<>();
-            response.setMessage("Found");
+            response.setMessage("Student found. Updated Successfully");
             response.setHttpStatus(HttpStatus.FOUND.value());
             response.setData(studentRepository.save(student));
             return new ResponseEntity<Response<Student>>(response, HttpStatus.FOUND);
