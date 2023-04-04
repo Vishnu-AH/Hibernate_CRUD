@@ -1,11 +1,8 @@
 package com.pace.hibernate.service;
 
 import com.pace.hibernate.model.School;
-import com.pace.hibernate.response.Response;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface SchoolService {
 
