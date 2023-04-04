@@ -6,14 +6,12 @@ import com.pace.hibernate.model.School;
 import com.pace.hibernate.model.Student;
 import com.pace.hibernate.repository.SchoolRepository;
 import com.pace.hibernate.repository.StudentRepository;
-import com.pace.hibernate.response.Response;
 import com.pace.hibernate.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudentServiceImplementation implements StudentService {
@@ -21,91 +19,46 @@ public class StudentServiceImplementation implements StudentService {
     private StudentRepository studentRepository;
     @Autowired
     private SchoolRepository schoolRepository;
-
-    public ResponseEntity<Response<Student>> saveStudent(Student student, int school_id) throws SchoolNotFoundException {
-        if(schoolRepository.findById(school_id).isPresent()){
-            School school = schoolRepository.findById(school_id).get();
-            student.setSchool(school);
-            Response<Student> response = new Response<>();
-            response.setMessage("Student successfully saved");
-            response.setHttpStatus(HttpStatus.CREATED.value());
-            response.setData(studentRepository.save(student));
-            return new ResponseEntity<Response<Student>>(response, HttpStatus.CREATED);
+    @Override
+    public Student saveStudent(Student student, int school_id) throws SchoolNotFoundException {
+        Optional<School> optionalSchool = schoolRepository.findById(school_id);
+        if(optionalSchool.isPresent()){
+            student.setSchool(optionalSchool.get());
+            return studentRepository.save(student);
         }else{
             throw new SchoolNotFoundException("School does not exist for given ID");
         }
     }
-    public ResponseEntity<Response<List<Student>>> saveAllStudents(List<Student> students,int school_id) throws SchoolNotFoundException{
-        if(schoolRepository.findById(school_id).isPresent()){
-            Response<List<Student>> response = new Response<>();
-            School school = schoolRepository.findById(school_id).get();
-            for (Student student:students) {
-                student.setSchool(school);
-            }
-            studentRepository.saveAll(students);
-            response.setMessage("Successfully saved all students");
-            response.setHttpStatus(HttpStatus.CREATED.value());
-            response.setData(students);
-            return new ResponseEntity<Response<List<Student>>>(response, HttpStatus.CREATED);
-        }else{
-            throw new SchoolNotFoundException("School does not exist for given ID");
-        }
+    @Override
+    public List<Student> getStudents(){
+        return studentRepository.findAll();
     }
-
-    public ResponseEntity<Response<List<Student>>> getStudents(){
-        List<Student> students = studentRepository.findAll();
-        Response<List<Student>> response = new Response<>();
-        response.setMessage("Students found");
-        response.setHttpStatus(HttpStatus.FOUND.value());
-        response.setData(students);
-        return new ResponseEntity<Response<List<Student>>>(response, HttpStatus.FOUND);
+    @Override
+    public Student getStudentById(int id){
+        return studentRepository.findById(id).orElseThrow(()-> new StudentNotFoundException("Student not present for given ID"));
     }
-    public ResponseEntity<Response<Student>> getStudentById(int id){
-        if (studentRepository.findById(id).isPresent()) {
-            Response<Student> response = new Response<>();
-            response.setMessage("School found for given ID");
-            response.setHttpStatus(HttpStatus.FOUND.value());
-            response.setData(studentRepository.findById(id).get());
-            return new ResponseEntity<Response<Student>>(response, HttpStatus.FOUND);
-        }else{
-            throw new StudentNotFoundException("Student not present for given ID");
-        }
+    @Override
+    public Student getStudentByName(String name){
+        return studentRepository.findByName(name).orElseThrow(()-> new StudentNotFoundException("Student not present for given Name"));
     }
-
-    public ResponseEntity<Response<Student>> getStudentByName(String name){
-        if (studentRepository.findByName(name)!=null) {
-            Response<Student> response = new Response<>();
-            response.setMessage("Student found for given Name");
-            response.setHttpStatus(HttpStatus.FOUND.value());
-            response.setData(studentRepository.findByName(name));
-            return new ResponseEntity<Response<Student>>(response, HttpStatus.FOUND);
-        }else{
-            throw new StudentNotFoundException("Student not present for given Name");
-        }
-    }
-
-    public ResponseEntity<Response<Student>> deleteStudent(int id){
-        if (studentRepository.findById(id).isPresent()) {
-            Response<Student> response = new Response<>();
-            Student student = studentRepository.findById(id).get();
+    @Override
+    public Student deleteStudent(int id){
+        Optional<Student> optionalStudent = studentRepository.findById(id);
+        if (optionalStudent.isPresent()) {
+            Student student = optionalStudent.get();
             studentRepository.delete(student);
-            response.setMessage("Student found. Deleted successfully");
-            response.setHttpStatus(HttpStatus.FOUND.value());
-            response.setData(student);
-            return new ResponseEntity<Response<Student>>(response, HttpStatus.FOUND);
+            return student;
         }else{
             throw new StudentNotFoundException("Student not present for given Name");
         }
     }
-    public ResponseEntity<Response<Student>> updateStudent(Student student){
-        if(studentRepository.findById(student.getId()).isPresent()){
-            Student excistingStudent = studentRepository.findById(student.getId()).get();
-            student.setSchool(excistingStudent.getSchool());
-            Response<Student> response = new Response<>();
-            response.setMessage("Student found. Updated Successfully");
-            response.setHttpStatus(HttpStatus.FOUND.value());
-            response.setData(studentRepository.save(student));
-            return new ResponseEntity<Response<Student>>(response, HttpStatus.FOUND);
+    @Override
+    public Student updateStudent(Student student,int id){
+        Optional<Student> optionalStudent = studentRepository.findById(id);
+        if(optionalStudent.isPresent()){
+            student.setId(id);
+            student.setSchool(optionalStudent.get().getSchool());
+            return studentRepository.save(student);
         }else{
             throw new StudentNotFoundException("Student does not exists to update");
         }

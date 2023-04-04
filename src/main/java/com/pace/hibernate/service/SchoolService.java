@@ -5,18 +5,19 @@ import com.pace.hibernate.response.Response;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SchoolService {
 
-    public ResponseEntity<Response<School>> saveSchool(School school);
+    public School saveSchool(School school);
 
-    public ResponseEntity<Response<List<School>>> fetchAllSchools();
+    public List<School> fetchAllSchools();
 
-    public ResponseEntity<Response<School>> fetchSchoolById(int id);
+    public School fetchSchoolById(int id);
 
-    public ResponseEntity<Response<School>> fetchSchoolByName(String name);
+    public School fetchSchoolByName(String name);
 
-    public ResponseEntity<Response<School>> deleteSchool(int id);
+    public School deleteSchool(int id);
 
-    public ResponseEntity<Response<School>> updateSchool(School school);
+    public School updateSchool(School school,int id);
 }

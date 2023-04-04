@@ -6,20 +6,19 @@ import com.pace.hibernate.response.Response;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface StudentService {
 
-    public ResponseEntity<Response<Student>> saveStudent(Student student, int school_id) throws SchoolNotFoundException;
+    public Student saveStudent(Student student, int school_id) throws SchoolNotFoundException;
 
-    public ResponseEntity<Response<List<Student>>> saveAllStudents(List<Student> students,int school_id);
+    public List<Student> getStudents();
 
-    public ResponseEntity<Response<List<Student>>> getStudents();
+    public Student getStudentById(int id);
 
-    public ResponseEntity<Response<Student>> getStudentById(int id);
+    public Student getStudentByName(String name);
 
-    public ResponseEntity<Response<Student>> getStudentByName(String name);
+    public Student deleteStudent(int id);
 
-    public ResponseEntity<Response<Student>> deleteStudent(int id);
-
-    public ResponseEntity<Response<Student>> updateStudent(Student student);
+    public Student updateStudent(Student student, int id);
 }
