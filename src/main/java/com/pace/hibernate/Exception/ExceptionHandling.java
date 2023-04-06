@@ -1,28 +1,28 @@
 package com.pace.hibernate.Exception;
 
-import com.pace.hibernate.model.School;
-import com.pace.hibernate.response.Response;
+import com.pace.hibernate.responses.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-@ControllerAdvice
+@RestControllerAdvice
 public class ExceptionHandling extends ResponseEntityExceptionHandler {
     @ExceptionHandler(SchoolNotFoundException.class)
-    public ResponseEntity<Response<String>> schoolNotFoundExceptionHandlerEntity(SchoolNotFoundException ex){
-        Response<String> response = new Response<>();
+    public ResponseEntity<Object> schoolNotFoundExceptionHandlerEntity(SchoolNotFoundException ex){
+        ApiErrorResponse response = new ApiErrorResponse();
         response.setMessage(ex.getMessage());
         response.setHttpStatus(HttpStatus.NOT_FOUND.value());
         response.setData("No data found for given ID");
-        return new ResponseEntity<Response<String>>(response,HttpStatus.NOT_FOUND);
+        return new ResponseEntity<Object>(response,HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(StudentNotFoundException.class)
-    public ResponseEntity<Response<String>> studentNotFoundExceptionHandlerEntity(StudentNotFoundException ex){
-        Response<String> response = new Response<>();
+    public ResponseEntity<Object> studentNotFoundExceptionHandlerEntity(StudentNotFoundException ex){
+        ApiErrorResponse response = new ApiErrorResponse();
         response.setMessage(ex.getMessage());
         response.setHttpStatus(HttpStatus.NOT_FOUND.value());
         response.setData("No data found for given ID");
-        return new ResponseEntity<Response<String>>(response,HttpStatus.NOT_FOUND);
+        return new ResponseEntity<Object>(response,HttpStatus.NOT_FOUND);
     }
+
 }

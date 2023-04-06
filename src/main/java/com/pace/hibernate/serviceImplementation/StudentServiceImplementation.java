@@ -7,10 +7,12 @@ import com.pace.hibernate.model.Student;
 import com.pace.hibernate.repository.SchoolRepository;
 import com.pace.hibernate.repository.StudentRepository;
 import com.pace.hibernate.service.StudentService;
+import com.pace.hibernate.utility.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,6 +21,7 @@ public class StudentServiceImplementation implements StudentService {
     private StudentRepository studentRepository;
     @Autowired
     private SchoolRepository schoolRepository;
+
     @Override
     public Student saveStudent(Student student, int school_id) throws SchoolNotFoundException {
         Optional<School> optionalSchool = schoolRepository.findById(school_id);
@@ -30,19 +33,20 @@ public class StudentServiceImplementation implements StudentService {
         }
     }
     @Override
-    public List<Student> getStudents(){
-        return studentRepository.findAll();
+    public Page<Student> fetchAllStudents(int page,int pageSize, String sort, String order) throws StudentNotFoundException{
+        Pageable pageable = CommonUtil.getPageable(page,pageSize,sort,order);
+        return studentRepository.findAll(pageable);
     }
     @Override
-    public Student getStudentById(int id){
-        return studentRepository.findById(id).orElseThrow(()-> new StudentNotFoundException("Student not present for given ID"));
+    public Optional<Student> getStudentById(int id) throws StudentNotFoundException{
+        return studentRepository.findById(id);
     }
     @Override
-    public Student getStudentByName(String name){
-        return studentRepository.findByName(name).orElseThrow(()-> new StudentNotFoundException("Student not present for given Name"));
+    public Optional<Student> getStudentByName(String name) throws StudentNotFoundException{
+        return studentRepository.findByName(name);
     }
     @Override
-    public Student deleteStudent(int id){
+    public Student deleteStudent(int id) throws StudentNotFoundException{
         Optional<Student> optionalStudent = studentRepository.findById(id);
         if (optionalStudent.isPresent()) {
             Student student = optionalStudent.get();
@@ -53,7 +57,7 @@ public class StudentServiceImplementation implements StudentService {
         }
     }
     @Override
-    public Student updateStudent(Student student,int id){
+    public Student updateStudent(Student student,int id) throws StudentNotFoundException{
         Optional<Student> optionalStudent = studentRepository.findById(id);
         if(optionalStudent.isPresent()){
             student.setId(id);
@@ -63,4 +67,26 @@ public class StudentServiceImplementation implements StudentService {
             throw new StudentNotFoundException("Student does not exists to update");
         }
     }
+
+    @Override //JPQL Query
+    public Optional<Student> findStudentByIdAndName(int id, String name) throws StudentNotFoundException{
+        Optional<Student> optionalStudent = studentRepository.findStudentByIdAndName(id, name);
+        if(optionalStudent.isPresent()){
+            return optionalStudent;
+        }else{
+            throw new StudentNotFoundException("Student not found for given ID and Name");
+        }
+    }
+
+    @Override //Native Query
+    public Optional<Student> findByIdAndName(int id, String name) throws StudentNotFoundException{
+        Optional<Student> optionalStudent = studentRepository.findByIdAndName(id, name);
+        if(optionalStudent.isPresent()){
+            return optionalStudent;
+        }else{
+            throw new StudentNotFoundException("Student not found for given ID and Name");
+        }
+    }
+
+
 }
