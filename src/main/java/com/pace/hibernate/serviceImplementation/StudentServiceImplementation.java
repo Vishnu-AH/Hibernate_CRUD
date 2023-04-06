@@ -45,6 +45,7 @@ public class StudentServiceImplementation implements StudentService {
     public Optional<Student> getStudentByName(String name) throws StudentNotFoundException{
         return studentRepository.findByName(name);
     }
+
     @Override
     public Student deleteStudent(int id) throws StudentNotFoundException{
         Optional<Student> optionalStudent = studentRepository.findById(id);
@@ -56,6 +57,7 @@ public class StudentServiceImplementation implements StudentService {
             throw new StudentNotFoundException("Student not present for given Name");
         }
     }
+
     @Override
     public Student updateStudent(Student student,int id) throws StudentNotFoundException{
         Optional<Student> optionalStudent = studentRepository.findById(id);
