@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class SchoolNotFoundException extends RuntimeException{
     private String message;
-    SchoolNotFoundException(){
+    public SchoolNotFoundException(){
     }
     public SchoolNotFoundException(String message){
         this.message=message;
